@@ -26,11 +26,9 @@
     self.window.rootViewController = navVc;
     [self.window makeKeyAndVisible];
     
+    
     [PXRequest setConsumerKey:@"vS9CokfqHQf3k5LowcZGjy0oOIXcQtkYUxk5MPnM" consumerSecret:@"81eBr14r1fi2UlPLESMsdE0OTJfEuDObSOpODD7f"];
     
-
-    
-    // Override point for customization after application launch.
     return YES;
 }
 

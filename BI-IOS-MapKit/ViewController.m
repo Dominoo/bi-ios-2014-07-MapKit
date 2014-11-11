@@ -62,10 +62,7 @@
     if(indexPath.row == 0) {
      
         UIAlertController* alertController = [self createController];
-       // [self presentViewController:alertController animated:YES completion:nil];
-        
-        CollectionViewController* coll = [CollectionViewController new];
-        [self presentViewController:coll animated:YES completion:nil];
+        [self presentViewController:alertController animated:YES completion:nil];
         
     } else if(indexPath.row == 1){
               
@@ -117,7 +114,7 @@
                                    NSString* term = termField.text;
                                    NSLog(@"%@",term);
                                    
-                                   
+                                   [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                                    [PXRequest requestForSearchTerm:term
                                                          searchTag:nil                                                             searchGeo:nil
                                                               page:1
