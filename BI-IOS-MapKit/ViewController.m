@@ -125,6 +125,12 @@
                                                             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                                                             if (results) {
                                                                 NSLog(@"%@",results);
+                                                                CollectionViewController* collection = [CollectionViewController new];
+                                                                
+                                                                
+                                                                
+                                                                collection.data = results[@"photos"];
+                                                                [self.navigationController pushViewController:collection animated:YES];
                                                             }
                                                         }];
                                    

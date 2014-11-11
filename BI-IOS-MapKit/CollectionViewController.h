@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface CollectionViewController : UIViewController
+@property (nonatomic,strong) NSArray* data;
 
 
 @end

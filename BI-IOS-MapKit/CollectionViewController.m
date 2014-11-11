@@ -7,11 +7,10 @@
 //
 
 #import "CollectionViewController.h"
-
+#import <UIImageView+WebCache.h>
 @interface CollectionViewController () <UICollectionViewDelegate,UICollectionViewDataSource>
 
 @property (nonatomic,strong) UICollectionView* collectionView;
-
 @end
 
 @implementation CollectionViewController
@@ -31,8 +30,13 @@
 
 #pragma mark - UICollectionView Datasource
 
+- (void)setData:(NSArray *)data {
+    _data = data;
+    [self.collectionView reloadData];
+}
+
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
-    return 20;
+    return _data.count;
 }
 
 - (NSInteger)numberOfSectionsInCollectionView: (UICollectionView *)collectionView {
@@ -42,6 +46,16 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)cv cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewCell *cell = [cv dequeueReusableCellWithReuseIdentifier:@"PhotoCell" forIndexPath:indexPath];
     cell.backgroundColor = [UIColor whiteColor];
+    
+    UIImageView* imgV = [[UIImageView alloc] initWithFrame:cell.contentView.bounds];
+    
+    NSDictionary* dict = _data[indexPath.item];
+    
+    [imgV sd_setImageWithURL:[NSURL URLWithString:dict[@"image_url"][0]] placeholderImage:[UIImage imageNamed:@"krtek"]];
+    
+    [cell.contentView addSubview:imgV];
+    
+    
     return cell;
 }
 
