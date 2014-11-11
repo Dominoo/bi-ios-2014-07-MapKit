@@ -10,6 +10,7 @@
 
 #import "MapViewController.h"
 #import <PXAPI.h>
+#import "CollectionViewController.h"
 
 
 
@@ -36,7 +37,7 @@
     _mapView = [[MKMapView alloc]
                initWithFrame:self.view.bounds
                ];
-    _mapView.showsUserLocation = YES;
+    _mapView.showsUserLocation = NO;
     _mapView.mapType = MKMapTypeStandard;
     _mapView.delegate = self;
     [self.view addSubview:_mapView];
@@ -48,6 +49,10 @@
 
 - (void) search:(id) sender {
     [PXRequest requestForSearchGeo:[NSString stringWithFormat:@"%f,%f,20km",_annotation.coordinate.latitude,_annotation.coordinate.longitude] page:1 resultsPerPage:60 photoSizes:PXPhotoModelSizeThumbnail completion:^(NSDictionary *results, NSError *error) {
+        CollectionViewController* collection = [CollectionViewController new];
+        collection.data = results[@"photos"];
+        [self.navigationController pushViewController:collection animated:YES];
+        
     }];
 }
 
@@ -72,6 +77,8 @@
 }
 
 - (MKAnnotationView *) mapView: (MKMapView *) mapView viewForAnnotation: (id<MKAnnotation>) annotation {
+    
+    
     MKPinAnnotationView *pin = (MKPinAnnotationView *) [self.mapView dequeueReusableAnnotationViewWithIdentifier: @"myPin"];
     if([annotation isKindOfClass: [MKUserLocation class]])
         return nil;
@@ -81,14 +88,19 @@
     } else {
         pin.annotation = annotation;
     }
+    
     pin.animatesDrop = YES;
     pin.draggable = YES;
-    pin.canShowCallout = YES;
+    pin.canShowCallout = NO;
+    
     
     return pin;
 }
 
 
+//- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control
+
+//- (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view
 
 - (void)mapView:(MKMapView *)mapView
  annotationView:(MKAnnotationView *)annotationView

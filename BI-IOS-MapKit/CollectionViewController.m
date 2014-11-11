@@ -51,7 +51,9 @@
     
     NSDictionary* dict = _data[indexPath.item];
     
-    [imgV sd_setImageWithURL:[NSURL URLWithString:dict[@"image_url"][0]] placeholderImage:[UIImage imageNamed:@"krtek"]];
+    NSString* url = [dict[@"image_url"] isKindOfClass:[NSArray class]]? dict[@"image_url"][0] : dict[@"image_url"];
+    
+    [imgV sd_setImageWithURL:[NSURL URLWithString:url] placeholderImage:[UIImage imageNamed:@"krtek"]];
     
     [cell.contentView addSubview:imgV];
     

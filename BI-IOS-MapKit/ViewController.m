@@ -72,17 +72,32 @@
     
     } else if(indexPath.row == 2) {
         
+        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        picker.delegate = self;
+        picker.allowsEditing = YES;
+        picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         
-        NSData* data  = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"krtek" ofType:@"jpg"]];
+        [self presentViewController:picker animated:YES completion:NULL];
         
-        [PXRequest authenticateWithUserName:@"bi-ios" password:@"fitios" completion:^(BOOL stop) {
-            [PXRequest requestToUploadPhotoImage:data name:@"Krtek" description:@"Krtek v letadle" completion:^(NSDictionary *results, NSError *error) {
-                NSLog(@"..");
-            }];
-        }];
+       
        
         
     }
+    
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    
+    UIImage *chosenImage = info[UIImagePickerControllerEditedImage];
+    NSData* data  = UIImagePNGRepresentation(chosenImage);
+    
+    [PXRequest authenticateWithUserName:@"bi-ios" password:@"fitios" completion:^(BOOL stop) {
+        
+        [PXRequest requestToUploadPhotoImage:data name:@"aaa
+          description:@"aaa" completion:^(NSDictionary *results, NSError *error) {
+            NSLog(@"..");
+        }];
+    }];    [picker dismissViewControllerAnimated:YES completion:NULL];
     
 }
 
