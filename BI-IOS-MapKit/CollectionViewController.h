@@ -10,5 +10,6 @@
 
 @interface CollectionViewController : UIViewController
 
+@property (nonatomic,strong) NSArray* data;
 
 @end

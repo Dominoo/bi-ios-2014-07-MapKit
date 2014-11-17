@@ -10,11 +10,12 @@
 #import <PXAPI.h>
 #import "MapViewController.h"
 #import "CollectionViewController.h"
+#import <SVProgressHUD.h>
+
 @import CoreLocation;
 
 @interface ViewController ()
 @property (nonatomic,strong) NSArray* data;
-@property (nonatomic,strong) CLLocationManager* manager;
 
 @end
 
@@ -61,6 +62,7 @@
     
     if(indexPath.row == 0) {
      
+        [SVProgressHUD show];
         UIAlertController* alertController = [self createController];
         [self presentViewController:alertController animated:YES completion:nil];
         
@@ -72,21 +74,34 @@
     
     } else if(indexPath.row == 2) {
         
+        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        picker.delegate = self;
+        picker.allowsEditing = YES;
+        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
         
-        NSData* data  = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"krtek" ofType:@"jpg"]];
         
-        [PXRequest authenticateWithUserName:@"bi-ios" password:@"fitios" completion:^(BOOL stop) {
-            [PXRequest requestToUploadPhotoImage:data name:@"Krtek" description:@"Krtek v letadle" completion:^(NSDictionary *results, NSError *error) {
-                NSLog(@"..");
-            }];
-        }];
-       
+        [self presentViewController:picker animated:YES completion:NULL];
+        
+        
         
     }
     
 }
 
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    
+    UIImage *chosenImage = info[UIImagePickerControllerEditedImage];
+    NSData* data  = UIImageJPEGRepresentation(chosenImage, 0.9);
+    
+    [PXRequest authenticateWithUserName:@"bi-ios" password:@"fitios" completion:^(BOOL stop) {
+        [PXRequest requestToUploadPhotoImage:data name:@"Krtek" description:@"Krtek v letadle" completion:^(NSDictionary *results, NSError *error) {
+        }];
+    }];
 
+    
+    [picker dismissViewControllerAnimated:YES completion:NULL];
+    
+}
 
 
 
@@ -100,6 +115,7 @@
     [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField)
      {
          textField.placeholder = NSLocalizedString(@"Term", @"Login");
+         
      }];
     
     UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
@@ -125,6 +141,12 @@
                                                             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                                                             if (results) {
                                                                 NSLog(@"%@",results);
+                                                                CollectionViewController * coll = [CollectionViewController new];
+                                                                coll.data = results[@"photos"];
+                                                                [self.navigationController pushViewController:coll animated:YES];
+                                                                [SVProgressHUD dismiss];
+
+
                                                             }
                                                         }];
                                    

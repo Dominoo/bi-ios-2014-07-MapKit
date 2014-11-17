@@ -10,6 +10,7 @@
 
 #import "MapViewController.h"
 #import <PXAPI.h>
+#import "CollectionViewController.h"
 
 
 
@@ -48,6 +49,10 @@
 
 - (void) search:(id) sender {
     [PXRequest requestForSearchGeo:[NSString stringWithFormat:@"%f,%f,20km",_annotation.coordinate.latitude,_annotation.coordinate.longitude] page:1 resultsPerPage:60 photoSizes:PXPhotoModelSizeThumbnail completion:^(NSDictionary *results, NSError *error) {
+        CollectionViewController * coll = [CollectionViewController new];
+        coll.data = results[@"photos"];
+        [self.navigationController pushViewController:coll animated:YES];
+
     }];
 }
 
@@ -58,6 +63,7 @@
 
 - (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation
 {
+    
     MKCoordinateRegion region;
     MKCoordinateSpan span;
     span.latitudeDelta = 0.005;
@@ -84,9 +90,19 @@
     pin.animatesDrop = YES;
     pin.draggable = YES;
     pin.canShowCallout = YES;
+    pin.leftCalloutAccessoryView = [UISwitch new];
     
     return pin;
 }
+
+
+- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view
+calloutAccessoryControlTapped:(UIControl *)control {
+    NSLog(@"tapped");
+    
+    
+}
+//- (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view
 
 
 
@@ -103,15 +119,6 @@ didChangeDragState:(MKAnnotationViewDragState)newState
         CLLocation * loc = [[CLLocation alloc] initWithLatitude:droppedAt.latitude longitude:droppedAt.longitude];
         [ceo reverseGeocodeLocation:loc completionHandler:^(NSArray *placemarks, NSError *error) {
             CLPlacemark *placemark = [placemarks objectAtIndex:0];
-            NSLog(@"placemark %@",placemark);
-            //String to hold address
-            NSString *locatedAt = [[placemark.addressDictionary valueForKey:@"FormattedAddressLines"] componentsJoinedByString:@", "];
-            NSLog(@"addressDictionary %@", placemark.addressDictionary);
-            NSLog(@"placemark %@",placemark.region);
-            NSLog(@"placemark %@",placemark.country);
-            NSLog(@"placemark %@",placemark.locality);
-            
-            
             self.title = placemark.locality;
         }];
 
